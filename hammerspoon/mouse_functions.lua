@@ -19,6 +19,7 @@ hs.hotkey.bind(hyper, "f", function()
     local screen = hs.mouse.getCurrentScreen():toWest()
     if screen then
       hs.mouse.setAbsolutePosition(screen:frame().center)
+      customShow() -- Custom show function to circle the mouse
     end
   end)
   
@@ -27,6 +28,7 @@ hs.hotkey.bind(hyper, "f", function()
     local screen = hs.mouse.getCurrentScreen():toEast()
     if screen then
       hs.mouse.setAbsolutePosition(screen:frame().center)
+      customShow() -- Custom show function to circle the mouse
     end
   end)
   
