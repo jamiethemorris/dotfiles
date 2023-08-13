@@ -3,6 +3,8 @@ require ("hotkeys")
 require("mouse_functions")
 require("mousemap")
 require("spaces")
+require ("windows")
+require ("qmklayerdisplay")
 
 -- Reload config
 hs.hotkey.bind(hyper, "r", function()

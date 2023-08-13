@@ -1,3 +1,4 @@
 -- Hotkey combinations
 hyper = {"ctrl", "alt", "cmd", "shift"}
-super = {"ctrl", "alt", "cmd"}
+power = {"ctrl", "alt", "cmd"}
+meh = {"ctrl", "alt", "shift"}
