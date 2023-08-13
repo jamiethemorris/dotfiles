@@ -10,6 +10,12 @@ local lastLayerText = currentLayer -- Initialize to the default layer
 local currentDPI = "DPI: 1600"
 local currentDPIColor = { white = 1, alpha = 1 } -- Define a default color for DPI text
 
+local showTrackballLayer = true
+local showDygmaLayer = true
+local showGMMKLayer = true
+local showQ0Layer = true
+local layerOffset = -60
+
 local function setAllSpacesBehavior(canvasObject)
   canvasObject:level(hs.canvas.windowLevels.overlay)
   canvasObject:behavior(hs.canvas.windowBehaviors.canJoinAllSpaces)
@@ -57,27 +63,28 @@ function drawLayerText(text, textColor, updateLastLayer, positionOffset, canvasO
   return canvasObj
 end
 
-local layerOffset = -60
-
 function drawTrackballLayerText(layer, color)
-  trackballLayerText = drawLayerText(layer, color, true, layerOffset - 120, trackballLayerText) -- 0 is the position offset for trackball
+  if showTrackballLayer then
+    trackballLayerText = drawLayerText(layer, color, true, layerOffset - 120, trackballLayerText)
+  end
 end
 
 function drawDygmaLayerText(layer, color)
-  dygmaLayerText = drawLayerText(layer, color, true, layerOffset + 0, dygmaLayerText) 
+  if showDygmaLayer then
+    dygmaLayerText = drawLayerText(layer, color, true, layerOffset + 0, dygmaLayerText)
+  end
 end
 
 function drawGMMKLayerText(layer, color)
-  gmmkLayerText = drawLayerText(layer, color, true, layerOffset + 240, gmmkLayerText)
+  if showGMMKLayer then
+    gmmkLayerText = drawLayerText(layer, color, true, layerOffset + 240, gmmkLayerText)
+  end
 end
 
 function drawQ0LayerText(layer, color)
-  q0LayerText = drawLayerText(layer, color, true, layerOffset + 120, q0LayerText)
-end
-
-local function drawDpiText(dpiText, color)
-  drawLayerText(dpiText, color, false) -- Do not update the last layer text
-  hs.timer.doAfter(1, function() drawLayerText(lastLayerText, nil, false) end) -- Revert back to the last layer text after 1 second
+  if showQ0Layer then
+    q0LayerText = drawLayerText(layer, color, true, layerOffset + 120, q0LayerText)
+  end
 end
 
 -- Bindings for trackball Layers
