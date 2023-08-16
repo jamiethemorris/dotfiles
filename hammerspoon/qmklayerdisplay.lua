@@ -87,6 +87,11 @@ function drawQ0LayerText(layer, color)
   end
 end
 
+local function drawDpiText(dpiText, color)
+  drawTrackballLayerText(dpiText, color, false) -- Do not update the last layer text
+  hs.timer.doAfter(1, function() drawLayerText(lastLayerText, nil, false) end) -- Revert back to the last layer text after 1 second
+end
+
 -- Bindings for trackball Layers
 hs.hotkey.bind(hyper, 'F13', function() drawTrackballLayerText("Layer: Default", nil, true, 0) end)
 hs.hotkey.bind(hyper, 'F14', function() drawTrackballLayerText("Layer: Spaces", nil, true, 0) end)
@@ -98,6 +103,7 @@ hs.hotkey.bind(hyper, 'F17', function() drawTrackballLayerText("Layer: Mixer", n
 hs.hotkey.bind(meh, 'F13', function() drawDygmaLayerText("Layer: Mac", nil) end)
 hs.hotkey.bind(meh, 'F14', function() drawDygmaLayerText("Layer: PC", nil) end)
 hs.hotkey.bind(meh, 'F15', function() drawDygmaLayerText("Layer: Gaming", nil) end)
+hs.hotkey.bind(meh, 'F16', function() drawDygmaLayerText("Layer: L2 Test", nil) end)
 
 -- Bindings for GMMK Layers
 hs.hotkey.bind(power, 'F13', function() drawGMMKLayerText("Layer: Macros", nil) end)
