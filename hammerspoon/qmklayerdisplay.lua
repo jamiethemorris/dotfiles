@@ -15,13 +15,14 @@ local showDygmaLayer = true
 local showGMMKLayer = true
 local showQ0Layer = true
 local layerOffset = -60
+local displayWidthCompensation = -560
 
 local function setAllSpacesBehavior(canvasObject)
   canvasObject:level(hs.canvas.windowLevels.overlay)
   canvasObject:behavior(hs.canvas.windowBehaviors.canJoinAllSpaces)
 end
 
-function drawLayerText(text, textColor, updateLastLayer, positionOffset, canvasObj)
+function drawLayerText(text, textColor, updateLastLayer, positionOffset, canvasObj, targetScreen)
   if updateLastLayer then -- Only update the lastLayerText if the flag is set
     lastLayerText = text
   end
@@ -32,7 +33,8 @@ function drawLayerText(text, textColor, updateLastLayer, positionOffset, canvasO
 
   local rectWidth = 100
   local rectHeight = 20
-  local positionX = (hs.screen.mainScreen():frame().w - rectWidth) / 2 - positionOffset
+  targetScreen = targetScreen or hs.screen.mainScreen() -- Use the target screen if provided, or the main screen
+  local positionX = (targetScreen:frame().w - rectWidth) / 2 - positionOffset
 
   canvasObj = hs.canvas.new(hs.geometry.rect(positionX, 0, rectWidth, rectHeight))
 
@@ -63,29 +65,55 @@ function drawLayerText(text, textColor, updateLastLayer, positionOffset, canvasO
   return canvasObj
 end
 
+local targetScreen = hs.screen.allScreens()[2]
+
 function drawTrackballLayerText(layer, color)
   if showTrackballLayer then
-    trackballLayerText = drawLayerText(layer, color, true, layerOffset - 120, trackballLayerText)
+    trackballLayerText = drawLayerText(layer, color, true, layerOffset - 120 + displayWidthCompensation, trackballLayerText, targetScreen)
   end
 end
 
 function drawDygmaLayerText(layer, color)
   if showDygmaLayer then
-    dygmaLayerText = drawLayerText(layer, color, true, layerOffset + 0, dygmaLayerText)
+    dygmaLayerText = drawLayerText(layer, color, true, layerOffset + 0 + displayWidthCompensation, dygmaLayerText, targetScreen)
   end
+  
 end
-
 function drawGMMKLayerText(layer, color)
   if showGMMKLayer then
-    gmmkLayerText = drawLayerText(layer, color, true, layerOffset + 240, gmmkLayerText)
+    gmmkLayerText = drawLayerText(layer, color, true, layerOffset + 240 + displayWidthCompensation, gmmkLayerText, targetScreen)
   end
 end
 
 function drawQ0LayerText(layer, color)
   if showQ0Layer then
-    q0LayerText = drawLayerText(layer, color, true, layerOffset + 120, q0LayerText)
+    q0LayerText = drawLayerText(layer, color, true, layerOffset + 120 + displayWidthCompensation, q0LayerText, targetScreen)
   end
 end
+
+--[[ function drawTrackballLayerText(layer, color)
+  if showTrackballLayer then
+    trackballLayerText = drawLayerText(layer, color, true, layerOffset - 680, trackballLayerText, targetScreen)
+  end
+end
+
+function drawDygmaLayerText(layer, color)
+  if showDygmaLayer then
+    dygmaLayerText = drawLayerText(layer, color, true, layerOffset - 560, dygmaLayerText, targetScreen)
+  end
+end
+
+function drawGMMKLayerText(layer, color)
+  if showGMMKLayer then
+    gmmkLayerText = drawLayerText(layer, color, true, layerOffset - 320, gmmkLayerText, targetScreen)
+  end
+end
+
+function drawQ0LayerText(layer, color)
+  if showQ0Layer then
+    q0LayerText = drawLayerText(layer, color, true, layerOffset - 440, q0LayerText, targetScreen)
+  end
+end ]]
 
 local function drawDpiText(dpiText, color)
   drawTrackballLayerText(dpiText, color, false) -- Do not update the last layer text
@@ -103,7 +131,7 @@ hs.hotkey.bind(hyper, 'F17', function() drawTrackballLayerText("Layer: Mixer", n
 hs.hotkey.bind(meh, 'F13', function() drawDygmaLayerText("Layer: Mac", nil) end)
 hs.hotkey.bind(meh, 'F14', function() drawDygmaLayerText("Layer: PC", nil) end)
 hs.hotkey.bind(meh, 'F15', function() drawDygmaLayerText("Layer: Gaming", nil) end)
-hs.hotkey.bind(meh, 'F16', function() drawDygmaLayerText("Layer: L2 Test", nil) end)
+hs.hotkey.bind(meh, 'F16', function() drawDygmaLayerText("Layer: Mouse", nil) end)
 
 -- Bindings for GMMK Layers
 hs.hotkey.bind(power, 'F13', function() drawGMMKLayerText("Layer: Macros", nil) end)
@@ -140,3 +168,12 @@ drawDygmaLayerText(currentDygmaLayer, nil)
 drawGMMKLayerText(currentGMMKLayer, nil)
 drawQ0LayerText(currentQ0Layer, nil)
 
+local screenWatcher = hs.screen.watcher.new(function()
+-- Recreate the default text and rectangle
+drawTrackballLayerText(currentLayer, nil)
+drawDygmaLayerText(currentDygmaLayer, nil)
+drawGMMKLayerText(currentGMMKLayer, nil)
+drawQ0LayerText(currentQ0Layer, nil)
+end)
+
+screenWatcher:start()
